@@ -15,6 +15,9 @@ from opendr.lighting import LambertianPointLight
 
 colors = {
     # colorbline/print/copy safe:
+    'light_red': [0.8627451, 0.65882353, 0.65882353],
+    'light_green': [0.74117647, 0.8627451 , 0.65882353],
+    'light_yellow': [[0.85882353, 0.8627451 , 0.65882353]],
     'light_blue': [0.65098039, 0.74117647, 0.85882353],
     'light_pink': [.9, .7, .7],  # This is used to do no-3d
 }
@@ -234,8 +237,6 @@ def render_model(verts,
 
 
 # ------------------------------
-
-
 def get_original(proc_param, verts, cam, joints, img_size):
     img_size = proc_param['img_size']
     undo_scale = 1. / np.array(proc_param['scale'])
