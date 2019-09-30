@@ -75,10 +75,11 @@ python -m demo --img_path data/random.jpg --json_path data/random_keypoints.json
 ### Webcam Demo (thanks @JulesDoe!)
 1. Download pre-trained models like above.
 2. Run webcam Demo
-2. Run the demo
+2. Run the demo on MEVA data samples
 ```
-python -m demo --img_path data/coco1.png
-python -m demo --img_path data/im1954.jpg
+python -m demo --img_path data/meva_sample.png
+python -m demo --img_path data/meva_sample_2.png
+python -m demo --img_path data/meva_sample_3.png
 ```
 
 ### Training code/data
