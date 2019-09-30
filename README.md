@@ -8,35 +8,40 @@ CVPR 2018
 
 ### Requirements
 - Python 2.7
-- [TensorFlow](https://www.tensorflow.org/) tested on version 1.3, demo alone runs with TF 1.12
+- [TensorFlow](https://www.tensorflow.org/) tested on version 1.3 for training, demo alone runs with TensorFlow 1.14
 
 ### Installation
 
-#### Linux Setup with virtualenv
+#### Linux Setup with conda
 ```
-virtualenv venv_hmr
-source venv_hmr/bin/activate
+conda create -n hmr python=2.7
+conda activate hmr
 pip install -U pip
-deactivate
-source venv_hmr/bin/activate
 pip install -r requirements.txt
 ```
 #### Install TensorFlow
 With GPU:
 ```
-pip install tensorflow-gpu==1.3.0
+pip install tensorflow-gpu
 ```
 Without GPU:
 ```
-pip install tensorflow==1.3.0
+pip install tensorflow
 ```
 
-### Windows Setup with python 3 and Anaconda
-This is only partialy tested.
+#### Other dependencies
+
+I found while setting up the project that it was missing other dependencies which were not in the requirements.txt
+
 ```
-conda env create -f hmr.yml
+pip install -U gast==0.2.2
+pip install ipdb
+conda install cudatoolkit
+conda install cudnn
 ```
-#### if you need to get chumpy 
+
+#### If you need to get chumpy 
+
 https://github.com/mattloper/chumpy/tree/db6eaf8c93eb5ae571eb054575fb6ecec62fd86d
 
 
@@ -54,10 +59,14 @@ python -m demo --img_path data/im1954.jpg
 ```
 
 Images should be tightly cropped, where the height of the person is roughly 150px.
-On images that are not tightly cropped, you can run
-[openpose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) and supply
-its output json (run it with `--write_json` option).
-When json_path is specified, the demo will compute the right scale and bbox center to run HMR:
+
+### Adding pose information to inference
+
+On images that are not tightly cropped, you can run [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) and supply its output json 
+
+(run it with `--write_json` option).
+When `--json_path` is specified while running the demo, it will compute the right scale and bbox center to run HMR:
+
 ```
 python -m demo --img_path data/random.jpg --json_path data/random_keypoints.json
 ```
