@@ -90,12 +90,12 @@ def visualize(img, proc_param, joints, verts, cam):
     # ipdb.set_trace()
 
 
-def preprocess_image(img_path, json_path=None):
+def preprocess_image(img_path, person_bbox=None):
     img = io.imread(img_path)
     if img.shape[2] == 4:
         img = img[:, :, :3]
 
-    if json_path is None:
+    if person_bbox is None:
         if np.max(img.shape[:2]) != config.img_size:
             print('Resizing so the max image size is %d..' % config.img_size)
             scale = (float(config.img_size) / np.max(img.shape[:2]))
@@ -105,7 +105,10 @@ def preprocess_image(img_path, json_path=None):
         # image center in (x,y)
         center = center[::-1]
     else:
-        scale, center = op_util.get_bbox(json_path)
+        x1, y1, x2, y2 = person_bbox
+        center = np.array([(x1 + x2) // 2, (y1 + y2) // 2])
+        person_height = np.linalg.norm(y2 - y1)
+        scale = 150. / person_height
 
     crop, proc_param = img_util.scale_and_crop(img, scale, center,
                                                config.img_size)
@@ -116,11 +119,14 @@ def preprocess_image(img_path, json_path=None):
     return crop, proc_param, img
 
 
-def main(img_path, json_path=None):
+def main(img_path):
     sess = tf.compat.v1.Session()
     model = RunModel(config, sess=sess)
 
-    input_img, proc_param, img = preprocess_image(img_path, json_path)
+    # Hooded man [171, 102, 225, 244]
+    # Woman w/sunglasses [63, 71, 104, 199]
+
+    input_img, proc_param, img = preprocess_image(img_path, [63, 71, 104, 199])
     # Add batch dimension: 1 x D x D x 3
     input_img = np.expand_dims(input_img, 0)
 
@@ -137,11 +143,14 @@ def main(img_path, json_path=None):
 if __name__ == '__main__':
     config = flags.FLAGS
     config(sys.argv)
+
     # Using pre-trained model, change this to use your own.
     config.load_path = src.config.PRETRAINED_MODEL
 
+    # Demo only processes one image at a time
     config.batch_size = 1
 
+    # Global renderer needs to be declared
     renderer = vis_util.SMPLRenderer(face_path=config.smpl_face_path)
 
-    main(config.img_path, config.json_path)
+    main(config.img_path)

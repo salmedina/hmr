@@ -30,6 +30,6 @@ def get_bbox(json_path, vis_thr=0.2):
         import ipdb
         ipdb.set_trace()
     center = (min_pt + max_pt) / 2.
-    scale = 150. / person_height
+    scale = 150. / person_height # Why 150. ? Defined while training the model?
 
     return scale, center
