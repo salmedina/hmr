@@ -37,7 +37,7 @@ def Encoder_resnet(x, is_training=True, weight_decay=0.001, reuse=False):
     - variables: tf variables
     """
     from tensorflow.contrib.slim.python.slim.nets import resnet_v2
-    with tf.name_scope("Encoder_resnet", [x]):
+    with tf.name_scope("Encoder_resnet", values=[x]):
         with slim.arg_scope(
                 resnet_v2.resnet_arg_scope(weight_decay=weight_decay)):
             net, end_points = resnet_v2.resnet_v2_50(
@@ -65,7 +65,7 @@ def Encoder_fc3_dropout(x,
 
     Outputs:
     - 3D params: N x num_output
-      if orthogonal: 
+      if orthogonal:
            either 85: (3 + 24*3 + 10) or 109 (3 + 24*4 + 10) for factored axis-angle representation
       if perspective:
           86: (f, tx, ty, tz) + 24*3 + 10, or 110 for factored axis-angle.
@@ -73,7 +73,7 @@ def Encoder_fc3_dropout(x,
     """
     if reuse:
         print('Reuse is on!')
-    with tf.variable_scope(name, reuse=reuse) as scope:
+    with tf.compat.v1.variable_scope(name, reuse=reuse) as scope:
         net = slim.fully_connected(x, 1024, scope='fc1')
         net = slim.dropout(net, 0.5, is_training=is_training, scope='dropout1')
         net = slim.fully_connected(net, 1024, scope='fc2')
