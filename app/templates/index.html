@@ -52,7 +52,9 @@
 <main role="main" class="container">
 
       <div class="row mb-2">
-          <div id="bbox_image_div" class="col"></div>
+          <div class="col">
+              <img id="bbox_image" class="img-fluid" src="{{ display_image }}" alt="Input Image">
+          </div>
           <div class="col">
             <div class="form-check">
               <label class="form-check-label">
@@ -85,16 +87,18 @@ $('input:checkbox').change(function() {
     persons_selected.push(checkboxes[i].value)
   }
   $.ajax({
-      url: "/renderbbox",
-      type: "get",
-      data: {jsdata: persons_selected},
-      success: function(response) {
-        $("#bbox_image_div").html(response);
-      },
-      error: function(xhr) {
-        console.log("There was an error while updating image")
-      }
-    });
+    type: 'GET',
+    cache: false,
+    url: '/renderbbox',
+    data: {jsdata: persons_selected},
+    success: function(resp){
+      d = new Date();
+      $('img').attr('src', resp.url+"?"+d.getTime());
+    },
+    error: function(xhr) {
+      console.log("There was an error while updating image")
+    }
+  });
 })
 </script>
 </html>
